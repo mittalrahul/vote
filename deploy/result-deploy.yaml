@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: results
+  namespace: instavote
+spec: 
+  replicas: 4
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 20
+  selector:
+    matchLabels:
+      role: results
+    matchExpressions:
+      - key: version
+        operator: Exists
+  template:
+    metadata:
+      name: results
+      labels:
+        app: any
+        role: results
+        version: latest
+    spec:
+      containers:
+        - name: results
+          image: schoolofdevops/vote-result
